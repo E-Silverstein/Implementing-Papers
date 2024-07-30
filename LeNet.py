@@ -1,10 +1,10 @@
+# Implementation of Gradient-Based Learning Applied to Document Recognition
+
 import torch
 import torchvision
 import torch.nn as nn
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-
-import numpy as np
 
 # Hyperparms
 batch_size = 64
@@ -44,21 +44,22 @@ test_data = torchvision.datasets.MNIST(
 train_loader = DataLoader(dataset=train_data, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(dataset=test_data, batch_size=batch_size, shuffle=True)
 
+
 class LeNet5(nn.Module):
-    def __init__(self, num_classes,*args, **kwargs) -> None:
+    def __init__(self, num_classes, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.c1 = nn.Sequential(
-            nn.Conv2d(1,6, kernel_size=5, stride=1, padding=0),
+            nn.Conv2d(1, 6, kernel_size=5, stride=1, padding=0),
             nn.BatchNorm2d(6),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
+            nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         self.c2 = nn.Sequential(
-            nn.Conv2d(6,16, kernel_size=5, stride=1, padding=0),
+            nn.Conv2d(6, 16, kernel_size=5, stride=1, padding=0),
             nn.BatchNorm2d(16),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
+            nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         self.fc = nn.Linear(400, 120)
@@ -96,8 +97,12 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-        if (i+1) % 250 == 0:
-            print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, num_epochs, i+1, total_steps, loss.item()))
+        if (i + 1) % 250 == 0:
+            print(
+                "Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(
+                    epoch + 1, num_epochs, i + 1, total_steps, loss.item()
+                )
+            )
 
 
 print("Training Complete!")
@@ -113,4 +118,8 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-    print('Accuracy of the network on the 10000 test images: {} %'.format(100 * correct / total))
+    print(
+        "Accuracy of the network on the 10000 test images: {} %".format(
+            100 * correct / total
+        )
+    )
